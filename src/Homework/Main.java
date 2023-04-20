@@ -1,11 +1,7 @@
 package Homework;
-
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
-
 public class Main {
     public static void main(String[] args) {
         Main main = new Main();
@@ -16,6 +12,11 @@ public class Main {
         Person jacky= new Person("Jacky",19,"street5");
         Person jilly= new Person("Jilly",19,"street6");
         List<Person> list = List.of(jack,john,jill,johny,jacky,jilly);
+
+        //1)esli toString ne peredeliwatj, to moschno tak
+        main.keyIntValueList(list).forEach((k,v)-> System.out.println(k+"->"+v.stream()
+                .map(Person::getName).collect(Collectors.toList())) );//w metode mi sgrupirowali ich po key, a tut value ogranitschili tolko name, a ostalnoe is toStringa ne wsjali
+
 //Задача1
 //Используя стримы, написать метод, принимающий список персонов и возвращающий мапу, где возраст является ключом,
 // а список персонов этого возраста значением
@@ -31,17 +32,21 @@ public class Main {
     }
     //1)
     public Map<Integer,List<Person>> keyIntValueList (List<Person> people){
-        return people.stream().collect(Collectors.groupingBy(Person::getAge,Collectors.toList()));
+        return people.stream().collect(Collectors.groupingBy(Person::getAge));
     }
 
     //2)
     public int summingInt(List<Person> people){
-        return people.stream().filter(p->p.getAge()>17).collect(Collectors.summingInt(Person::getAge));
+        return people.stream().filter(p->p.getAge()>17).mapToInt(Person::getAge).sum();
+    }                                                   //.collect(Collectors.summingInt(Person::getAge))
+    public int summingInt2(List<Person> people){
+        return people.stream().filter(p->p.getAge()>17).map(Person::getAge).reduce(0,Integer::sum);//natschalnoe snatschenie 0, summiruj Integer Age
     }
 
     //3)
     public String returnNames(List<Person> people){
-        return people.stream().filter(p -> p.getAge() > 18).collect(Collectors.joining(" and ","In Germany "," are of legal age.")).toString();
+        return people.stream().filter(p -> p.getAge() > 18).map(Person::getName)
+                .collect(Collectors.joining(" and ","In Germany "," are of legal age."));
     }
 
 
